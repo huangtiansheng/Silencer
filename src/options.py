@@ -4,7 +4,7 @@ import torch
 def args_parser():
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('--data', type=str, default='fmnist',
+    parser.add_argument('--data', type=str, default='cifar10',
                         help="dataset we want to train on")
     
     parser.add_argument('--num_agents', type=int, default=40,
