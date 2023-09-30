@@ -98,7 +98,6 @@ class Agent():
              
 
     def fire_mask(self, model, weights, masks, round):
-        
         drop_ratio = self.args.anneal_factor / 2 * (1 + np.cos((round * np.pi) / (self.args.rounds)))
         gradient = utils.vector_to_model(self.update,model )
         # logging.info(drop_ratio)

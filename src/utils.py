@@ -680,12 +680,12 @@ def add_pattern_bd(x, y, dataset='cifar10', pattern_type='square', agent_idx=-1,
                     # horizontal line
                     for i in range(start_idx - size // 2, start_idx + size // 2 + 1):
                         x[start_idx + size // 2, i] = 255
-    import matplotlib.pyplot as plt
-    if agent_idx == -1:
-        # plt.imsave("visualization/input_images/backdoor2.png", x)
-        plt.imshow(x)
-        print(y)
-        plt.show()
+    # import matplotlib.pyplot as plt
+    # if agent_idx == -1:
+    #     # plt.imsave("visualization/input_images/backdoor2.png", x)
+    #     plt.imshow(x)
+    #     print(y)
+    #     plt.show()
     return x
 
 

@@ -8,7 +8,6 @@ from copy import deepcopy
 from torch.nn import functional as F
 import logging
 from utils import vector_to_model
-from weiszfeld_array import geometric_median_array
 
 class Aggregation():
     def __init__(self, agent_data_sizes, n_params, poisoned_val_loader, args, writer):

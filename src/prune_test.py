@@ -1,22 +1,11 @@
 import torch
 import utils
-import models
-import math
 import copy
 import numpy as np
 from agent import Agent
-from agent_sparse import Agent as Agent_s
-from tqdm import tqdm
 from options import args_parser
-from aggregation import Aggregation
-# from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data import DataLoader
 import torch.nn as nn
-from time import ctime
-from torch.nn.utils import parameters_to_vector, vector_to_parameters
-from utils import H5Dataset
-import sys
-from resnet9 import ResNet9_tinyimagenet, ResNet9
 import random
 from models import CNN_MNIST, get_model
 
@@ -27,7 +16,6 @@ torch.cuda.manual_seed_all(0)
 np.random.seed(0)
 torch.backends.cudnn.deterministic = True
 import logging
-
 
 def CLP(net, u):
     sparse_num = 0
@@ -51,9 +39,7 @@ def CLP(net, u):
             total += torch.numel(m.weight)
 
     print(sparse_num / total)
-    print(channel_lips)
     weights_norm = np.round(np.sort(weights_norm), decimals=4).tolist()
-    print(weights_norm)
     net.load_state_dict(params)
 
 
@@ -190,6 +176,8 @@ def prune_test(dict, val_loader, poisoned_val_loader, args):
             percents = [0, 0.0025, 0.005, 0.0075, 0.01, 0.015, 0.03, 0.05, 0.075]
         else:
             percents = [0, 0.005, 0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35]
+    elif args.prune_method == "CLP":
+            percents  = [2,3,4]
     else:
         if args.data == "tinyimagenet":
             percents = [0, 0.0025, 0.005, 0.0075, 0.01, 0.015, 0.03, 0.05, 0.075, 0.1]
@@ -230,6 +218,8 @@ def prune_test(dict, val_loader, poisoned_val_loader, args):
                 GMP(global_model, gradient, percent_to_select)
             elif args.prune_method == "GMP-C":
                 GMP_C(global_model, gradient, percent_to_select)
+            elif args.prune_method == "CLP":
+                CLP(global_model, percent_to_select)
             else:
                 RP(global_model, percent_to_select)
             # warm_up_bn(global_model, train_loader)
@@ -250,88 +240,9 @@ def prune_test(dict, val_loader, poisoned_val_loader, args):
             # logging.info(temp2)
         accuracy += [round(np.mean(temp1), 2)]
         ASR += [round(np.mean(temp2), 2)]
-    logging.info(ASR)
     logging.info(accuracy)
-
-def dp_test(dict, val_loader, poisoned_val_loader, args):
-    # percents = [1, 1.2, 1.4, 1.6, 1.8, 2, 2.2, 2.4, 2.6, 2.8, 3]
-    if args.prune_method == "GMP-C":
-        if args.data == "tinyimagenet":
-            percents = [0, 0.00001, 0.0001, 0.0005, 0.001, 0.0015, 0.002]
-        else:
-            percents = [0, 0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.5, 0.6, 0.7]
-    elif args.prune_method == "RP":
-        if args.data == "tinyimagenet":
-            percents = [0, 0.01, 0.025, 0.05, 0.1, 0.125, 0.15, 0.175, 0.2]
-        else:
-            percents = [0, 0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4]
-    elif args.prune_method == "GMP-M":
-        if args.data == "tinyimagenet":
-            percents = [0, 0.0025, 0.005, 0.0075, 0.01, 0.015, 0.03, 0.05, 0.075]
-        else:
-            percents = [0, 0.005, 0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35]
-    else:
-        if args.data == "tinyimagenet":
-            percents = [0, 0.0025, 0.005, 0.0075, 0.01, 0.015, 0.03, 0.05, 0.075, 0.1]
-        else:
-            percents = [0, 0.0025, 0.005, 0.01, 0.015, 0.03, 0.05, 0.1, 0.15, 0.2]
-
-    ASR = []
-    accuracy = []
-    # percents= [0.01,0.02,0.03 ]
-    global_model = get_model(args.data).to(args.device)
-    vec = dict['clean_model']
-    state_dict = utils.vector_to_model(vec, global_model)
-    global_model.load_state_dict(state_dict)
-    # warm_up_bn(global_model, train_loader)
-    if args.prune_method == "GMP-M":
-        gradient = agents[22].screen_gradients(global_model)
-    elif args.prune_method == "GMP-B":
-        gradient = agents[23].screen_gradients(global_model)
-    elif args.prune_method == "GMP-C":
-        gradient = []
-        for agent in agents:
-            gradient += [agent.screen_gradients(global_model)]
-
-    for percent_to_select in percents:
-        # logging.info("percentage  {}".format(percent_to_select))
-
-        # CLP(global_model, percent_to_select)
-        # WMP(global_model, percent_to_select)
-        if args.prune_method == "RP":
-            trail = 5
-        else:
-            trail = 1
-        temp1 = []
-        temp2 = []
-        for random_exp in range(trail):
-            global_model.load_state_dict(state_dict)
-            if args.prune_method == "GMP-M" or args.prune_method == "GMP-B":
-                GMDP(global_model, gradient, percent_to_select)
-            elif args.prune_method == "GMP-C":
-                GMP_C(global_model, gradient, percent_to_select)
-            else:
-                RP(global_model, percent_to_select)
-            # warm_up_bn(global_model, train_loader)
-            criterion = nn.CrossEntropyLoss().to(args.device)
-
-            val_loss, (val_acc, val_per_class_acc), _ = utils.get_loss_n_accuracy(global_model, criterion, val_loader,
-                                                                                  args, 0, num_classes=num_target)
-            temp1 += [val_acc]
-            # logging.info(f'| val_acc: {val_loss:.3f} / {val_acc:.3f} |')
-
-            poison_loss, (poison_acc, _), _ = utils.get_loss_n_accuracy(global_model, criterion,
-                                                                        poisoned_val_loader,
-                                                                        args, 0, num_classes=num_target)
-            temp2 += [poison_acc]
-            # logging.info(f'|  Poison Loss/Poison Acc: {poison_loss:.3f} / {poison_acc:.3f} |')
-            # ask the guys to finetune the classifier
-            # logging.info(mask_aggrement)
-            # logging.info(temp2)
-        accuracy += [round(np.mean(temp1), 2)]
-        ASR += [round(np.mean(temp2), 2)]
     logging.info(ASR)
-    logging.info(accuracy)
+
 
 
 def weights_visualization(dict):
@@ -460,7 +371,7 @@ if __name__ == '__main__':
     logPath = "logs"
     logging.info(args)
     # PATH= "checkpoint/AckRatio4_1_Methodfedavg_datacifar10_alpha0.1_Rnd200_Epoch2_inject0.5_dense0.5_Aggavg_se_threshold0.0001_noniidFalse_maskthreshold20_attackr_neurotoxin.pt"
-    PATH = "checkpoint/Ack4_40_fedavg_fmnist_alpha0.5_Epoch2_inject0.5_dense0.25_Aggavg_sm1_noniidFalse_theta20_attackbadnet_end1000_af0.0001_ns8_toprandom"
+    PATH = "checkpoint/Ack4_40_fedavg_fmnist_alpha0.5_Epoch2_inject0.5_dense0.25_Aggavg_sm1_noniidFalse_theta20_attackbadnet_end1000_af0.0001_ns8_toprandom_rnd300.pt"
     dict = torch.load(PATH)
 
     # load dataset and user groups (i.e., user to data mapping)
@@ -509,14 +420,21 @@ if __name__ == '__main__':
     for _id in range(0, args.num_agents):
         agents += [Agent(_id, args, train_dataset, user_groups[_id], corrupt_idx=corrupt_idx)]
 
+    args.prune_method = "CLP"
+    logging.info(args.prune_method)
+    prune_test(dict, val_loader, poisoned_val_loader, args)
+
+
     # args.prune_method = "GMP-C"
     # logging.info(args.prune_method)
     # prune_test(dict, val_loader, poisoned_val_loader, args)
     #
-    args.prune_method = "GMP-M"
-    logging.info(args.prune_method)
-    # prune_test(dict, val_loader, poisoned_val_loader, args)
-    dp_test(dict, val_loader, poisoned_val_loader, args)
+
+    # args.prune_method = "GMP-M"
+    # logging.info(args.prune_method)
+    # # prune_test(dict, val_loader, poisoned_val_loader, args)
+    # dp_test(dict, val_loader, poisoned_val_loader, args)
+
     #
     # args.prune_method = "GMP-B"
     # logging.info(args.prune_method)
