@@ -12,6 +12,7 @@ import numpy as np
 import torch.nn.functional as F
 import logging
 
+# This is the agent class for silencer
 class Agent():
     def __init__(self, id, args, train_dataset=None, data_idxs=None, mask=None, sparsities=None, corrupt_idx=None):
         self.id = id
