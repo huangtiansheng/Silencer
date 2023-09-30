@@ -4,7 +4,7 @@ import torch
 def args_parser():
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('--data', type=str, default='cifar10',
+    parser.add_argument('--data', type=str, default='fmnist',
                         help="dataset we want to train on")
     
     parser.add_argument('--num_agents', type=int, default=40,
@@ -72,7 +72,7 @@ def args_parser():
                         help="num of workers for multithreading")
     parser.add_argument('--method', type=str, default="silencer",
                         help="num of workers for multithreading")
-    parser.add_argument('--pruning', type=str, default="gradient",
+    parser.add_argument('--pruning', type=str, default="FI",
                         help="num of workers for multithreading")
     parser.add_argument('--se_threshold', type=float, default=1e-4,
                         help="num of workers for multithreading")

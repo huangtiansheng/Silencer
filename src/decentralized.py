@@ -4,17 +4,14 @@ import math
 import copy
 import numpy as np
 from agent import Agent
-from agent_sparse import Agent as Agent_s
 from agent_bi import Agent as Agent_bi
 from options import args_parser
 from aggregation import Aggregation
-# from torch.utils.tensorboard import SummaryWriter
 import torch
 import random
 from torch.utils.data import DataLoader
 import torch.nn as nn
 from torch.nn.utils import parameters_to_vector
-
 import logging
 
 

@@ -44,24 +44,18 @@ class Agent():
         # size of local dataset
         self.n_data = len(self.train_dataset)
         self.corrupt_idx=corrupt_idx
+        # all cients are initialized the same mask
         self.mask = copy.deepcopy(mask)
         self.sparsities = sparsities
         self.num_remove= None
 
-    # def check_poison_timing(self, round):
-    #     if round> self.args.cease_poison:
-    #         self.train_dataset = utils.DatasetSplit(self.clean_backup_dataset, self.data_idxs)
-    #         self.train_loader = DataLoader(self.train_dataset, batch_size=self.args.bs, shuffle=True, \
-    #                                    num_workers=self.args.num_workers, pin_memory=False, drop_last=True)
 
 
-
-
-    def screen_gradients(self, model):
+    def screen_FI(self, model):
         model.train()
         # # # train and update
         criterion = nn.CrossEntropyLoss()
-        gradient = {name: 0 for name, param in model.named_parameters()}
+        FI = {name: 0 for name, param in model.named_parameters()}
         # # sample 10 batch  of data
         batch_num = 0
         for _, (x, labels) in enumerate(self.train_loader):
@@ -72,65 +66,28 @@ class Agent():
             minibatch_loss = criterion(log_probs, labels.long())
             loss = minibatch_loss
             loss.backward()
+            # when applying cross entropy, digonal of empirical Fisher information is the square of gradient
             for name, param in model.named_parameters():
-                gradient[name] += param.grad.data
-        return gradient
+                FI[name] += torch.square(param.grad.data)
+        return FI
 
-    def update_mask(self, masks, num_remove, gradient=None):
-        for name in gradient:
+    def update_mask(self, masks, num_remove, FI=None):
+        for name in FI:
             if self.args.dis_check_gradient:
                 if num_remove[name]>0:
                     temp = torch.where(masks[name] == 0, torch.ones_like(masks[name]), torch.zeros_like(masks[name]))
                     idx = torch.multinomial(temp.flatten().to(self.args.device), num_remove[name], replacement=False)
                     masks[name].view(-1)[idx] = 1
             else:
-                temp = torch.where(masks[name].to(self.args.device) == 0, torch.abs(gradient[name]),
-                                    -100000 * torch.ones_like(gradient[name]))
+                temp = torch.where(masks[name].to(self.args.device) == 0, torch.abs(FI[name]),
+                                    -100000 * torch.ones_like(FI[name]))
                 sort_temp, idx = torch.sort(temp.view(-1), descending=True)
                 masks[name].view(-1)[idx[:num_remove[name]]] = 1
         return masks
-    
-    def init_mask(self,  gradient=None):
-        for name in self.mask:
-            num_init = torch.count_nonzero(self.mask[name])
-            self.mask[name] = torch.zeros_like(self.mask[name])
-            sort_temp, idx = torch.sort(torch.abs(gradient[name]).view(-1), descending=True)
-            self.mask[name].view(-1)[idx[:num_init]] = 1
+
              
 
-    def fire_mask(self, model, weights, masks, round):
-        drop_ratio = self.args.anneal_factor / 2 * (1 + np.cos((round * np.pi) / (self.args.rounds)))
-        gradient = utils.vector_to_model(self.update,model )
-        # logging.info(drop_ratio)
-        num_remove = {}
-        for name in masks:
-            if self.sparsities[name]>0:
-                num_non_zeros = torch.sum(masks[name].to(self.args.device))
-                num_remove[name] = math.floor(drop_ratio * num_non_zeros)
-            else:
-                num_remove[name] = 0
-        for name in masks:
-            
-            if num_remove[name]>0 and  "track" not in name and "running" not in name: 
-                if self.args.pruning=="random":
-                    temp = torch.where(masks[name] == 1, torch.ones_like(masks[name]), torch.zeros_like(masks[name]))
-                    idx = torch.multinomial(temp.flatten().to(self.args.device), num_remove[name], replacement=False)
-                    masks[name].view(-1)[idx] = 0
-                elif self.args.pruning=="gradient":
-                    temp_weights = torch.where(masks[name].to(self.args.device) > 0, torch.abs(gradient[name]),
-                                            100000 * torch.ones_like(weights[name]))
-                    x, idx = torch.sort(temp_weights.view(-1).to(self.args.device))
-                    masks[name].view(-1)[idx[:num_remove[name]]] = 0
-                
-                else:
-                    temp_weights = torch.where(masks[name].to(self.args.device) > 0, torch.abs(weights[name]),
-                                            100000 * torch.ones_like(weights[name]))
-                    x, idx = torch.sort(temp_weights.view(-1).to(self.args.device))
-                    masks[name].view(-1)[idx[:num_remove[name]]] = 0
-        return masks, num_remove
-
-
-    def fire_mask2(self, model, round, gradient):
+    def fire_mask(self, model, round, FI):
       
         drop_ratio = self.args.anneal_factor / 2 * (1 + np.cos((round * np.pi) / (self.args.rounds)))
         
@@ -149,36 +106,34 @@ class Agent():
                     temp = torch.where(masks[name] == 0, torch.ones_like(masks[name]), torch.zeros_like(masks[name]))
                     idx = torch.multinomial(temp.flatten().to(self.args.device), num_remove[name], replacement=False)
                     masks[name].view(-1)[idx] = 0
-                elif self.args.pruning=="gradient":
-                    temp_weights = torch.where(masks[name].to(self.args.device) > 0,  torch.abs(gradient[name]   ),
-                                            100000 * torch.ones_like(gradient[name]))
+                elif self.args.pruning=="FI":
+                    temp_weights = torch.where(masks[name].to(self.args.device) > 0,  FI[name]  ,
+                                            100000 * torch.ones_like(FI[name]))
                     x, idx = torch.sort(temp_weights.view(-1).to(self.args.device))
                     masks[name].view(-1)[idx[:num_remove[name]]] = 0
                 else:
                     temp_weights = torch.where(masks[name].to(self.args.device) > 0,  torch.abs(model.state_dict()[name]   ),
-                                            100000 * torch.ones_like(gradient[name]))
+                                            100000 * torch.ones_like(FI[name]))
                     x, idx = torch.sort(temp_weights.view(-1).to(self.args.device))
                     masks[name].view(-1)[idx[:num_remove[name]]] = 0
         return masks, num_remove
 
-    def local_train(self, global_model, criterion, round=None, temparature=10, alpha=0.3, global_mask= None, neurotoxin_mask =None):
+    def local_train(self, global_model, criterion, round=None, neurotoxin_mask =None):
         """ Do a local training over the received global model, return the update """
         initial_global_model_params = parameters_to_vector([ global_model.state_dict()[name] for name in global_model.state_dict()]).detach()
-        # if self.id in self.corrupt_idx:
-        #     self.check_poison_timing(round)
         global_model.to(self.args.device)
         for name, param in global_model.named_parameters():
             self.mask[name] =self.mask[name].to(self.args.device)
             param.data = param.data * self.mask[name]
         if self.args.attack!="fix_mask" or self.id not in self.corrupt_idx:
-            gradient = self.screen_gradients(global_model)
-            self.mask, self.num_remove = self.fire_mask2(global_model, round, gradient)
+            FI = self.screen_FI(global_model)
+            self.mask, self.num_remove = self.fire_mask(global_model, round, FI)
             for name, param in global_model.named_parameters():
                 self.mask[name] =self.mask[name].to(self.args.device)
                 param.data = param.data * self.mask[name]  
             if self.num_remove!=None:
                 if self.id not in  self.corrupt_idx or self.args.attack!="fix_mask" :
-                    self.mask = self.update_mask(self.mask, self.num_remove, gradient)
+                    self.mask = self.update_mask(self.mask, self.num_remove, FI)
         
         global_model.train()
         lr = self.args.client_lr* (self.args.lr_decay)**round
