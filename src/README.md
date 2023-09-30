@@ -25,13 +25,20 @@ python decentralized.py
 ## Files organization
 The main simulation is in `decentralized.py`, where we initialize the benign and poison dataset, call clients to do local training, call aggregator to do aggregation, do consensus filtering before testing, etc.
 
-The client local training logistic is in `agent_bi.py`. It basically involves pruning-aware training and mask searching procedure.  
+The Silencer's client local training logistic is in `agent_bi.py`. It basically involves pruning-aware training and mask searching procedure.  
 
-The aggregation logistic is in `aggregation.py`, where we implement multiple defense baselines. 
+The vanilla FedAvg' client local training logistic is in `agent.py`. It basically involves pruning-aware training and mask searching procedure.  
+
+The aggregation logistic is in `aggregation.py`, where we implement multiple defense baselines. Silencer adopts the vanilla avg operation. 
 
 The data poisoning, data preparation and data distribution logistic is in `utils.py`. Specifically, check the function `poison_dataset()` of how we inject backdoor to the data. 
 
+--------------------------
+Use `prune_test.py` to reproduce the pruning methods we present in Section 4.1 of the paper. 
 
+Use `visual_test.py` to reproduce the Visualization section (see Appendix) of the paper. 
+
+Note: for these two tests, you need to train the checkpoints in advance. For pruning test, download the checkpoints from https://www.dropbox.com/home/Silencer 
 ## Logging and checkpoint
 The logging files will be contained in `src/logs`. Benign accuracy, ASR, and Backdoor accuracy will be tested in every 50 rounds.
 For Lockdown, the three metrics correspond to the following logging format:
