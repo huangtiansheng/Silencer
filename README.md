@@ -38,7 +38,7 @@ Use `prune_test.py` to reproduce the pruning methods we present in Section 4.1 o
 
 Use `visual_test.py` to reproduce the Visualization section (see Appendix) of the paper. 
 
-Note: for these two tests, you need to train the checkpoints in advance. For pruning test, download the checkpoints from https://www.dropbox.com/home/Silencer 
+Note: for these two tests, you need to train the checkpoints in advance. For pruning test, download the checkpoints from https://www.dropbox.com/sh/ibqi2rjnxrn2p8n/AACCcEc-SA4ruMxjvXPgzLC_a?dl=0
 ## Logging and checkpoint
 The logging files will be contained in `src/logs`. Benign accuracy, ASR, and Backdoor accuracy will be tested in every 50 rounds.
 For Lockdown, the three metrics correspond to the following logging format:
