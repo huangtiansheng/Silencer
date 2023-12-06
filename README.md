@@ -1,7 +1,7 @@
 
 
 # Silencer 
-This is the repo for the paper "Silencer: Pruning-aware Backdoor Defense for Decentralized Federated Learning".
+This is the repo for the paper "Proactive Defense Against Backdoor Trojan Attacks in Decentralized Learning".
 
 ## Algorithm overview
 The overall procedure can be summarized into four main steps. i)Pruning-aware training. ii) Mask searching. iii) Aggregation on each client. iv) After T rounds, do consensus filtering.
