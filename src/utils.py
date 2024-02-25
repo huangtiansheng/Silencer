@@ -47,7 +47,9 @@ class DatasetSplit(Dataset):
     def __init__(self, dataset, idxs, runtime_poison=False, args=None, client_id=-1, modify_label=True):
         self.dataset = dataset
         self.idxs = idxs
+        # # this is only used to counted classes
         self.targets = torch.Tensor([self.dataset.targets[idx] for idx in idxs])
+        
         self.runtime_poison = runtime_poison
         self.args = args
         self.client_id = client_id
@@ -69,8 +71,8 @@ class DatasetSplit(Dataset):
                 # plt.imshow(self.poison_sample[idx].permute(1, 2, 0))
                 # plt.show()
 
-    def classes(self):
-        return torch.unique(self.targets)
+    # def classes(self):
+    #     return torch.unique(self.targets)
 
     def __len__(self):
         return len(self.idxs)
@@ -237,7 +239,7 @@ def get_datasets(data):
     elif data == "gtsrb":
         train_transform = transforms.Compose([
             transforms.Resize((32, 32)),
-            transforms.RandomCrop(32, padding=4,padding_mode='reflect'),
+            transforms.RandomCrop(32, padding=4, padding_mode='reflect'),
             transforms.ToTensor(),
             transforms.Normalize([0, 0, 0], [1, 1, 1])
         ])
@@ -252,15 +254,15 @@ def get_datasets(data):
             test_dataset.targets)
     elif data == "tinyimagenet":
         transform = transforms.Compose([
-        transforms.Resize((64, 64)),
-        transforms.RandomCrop(64, padding=4,padding_mode='reflect'),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            transforms.Resize((64, 64)),
+            transforms.RandomCrop(64, padding=4, padding_mode='reflect'),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
         test_transform = transforms.Compose([
-        transforms.Resize((64, 64)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            transforms.Resize((64, 64)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
         _data_dir = '../data/tiny-imagenet-200/'
         train_dataset = datasets.ImageFolder(os.path.join(_data_dir, 'train'),
@@ -273,7 +275,8 @@ def get_datasets(data):
     return train_dataset, test_dataset
 
 
-def get_loss_n_accuracy(model, criterion, data_loader, args, round, num_classes=10):
+def get_loss_n_accuracy(model, criterion, data_loader, args, round, num_classes=10, identity_grid=None,
+                        noise_grid=None):
     """ Returns the loss and total accuracy, per class accuracy on the supplied data loader """
 
     # disable BN stats during inference
@@ -294,6 +297,23 @@ def get_loss_n_accuracy(model, criterion, data_loader, args, round, num_classes=
     for _, (inputs, labels) in enumerate(data_loader):
         inputs, labels = inputs.to(device=args.device, non_blocking=True), \
                          labels.to(device=args.device, non_blocking=True)
+
+        if args.attack == "wanet" and identity_grid != None and noise_grid != None:
+            import torch.nn.functional as F
+            bs = inputs.shape[0]
+            cross_ratio = 2
+            s = 0.5
+            k = 4
+            # Evaluate Backdoor
+            grid_temps = (identity_grid + s * noise_grid / 28)
+            grid_temps = torch.clamp(grid_temps, -1, 1)
+
+            ins = torch.rand(bs, 28, 28, 2).to(args.device) * 2 - 1
+            grid_temps2 = grid_temps.repeat(bs, 1, 1, 1) + ins / 28
+            grid_temps2 = torch.clamp(grid_temps2, -1, 1)
+
+            inputs = F.grid_sample(inputs, grid_temps.repeat(bs, 1, 1, 1), align_corners=True)
+
         # compute the total loss over minibatch
         outputs = model(inputs)
         avg_minibatch_loss = criterion(outputs, labels)
@@ -305,7 +325,10 @@ def get_loss_n_accuracy(model, criterion, data_loader, args, round, num_classes=
         all_labels.append(labels.cpu().view(-1))
         # correct_inputs = labels[torch.nonzero(torch.eq(pred_labels, labels) == 0).squeeze()]
         # not_correct_samples.append(  wrong_inputs )
-        correctly_labeled_samples += torch.sum(torch.eq(pred_labels, labels)).item()
+        if args.attack == "wanet" and identity_grid != None and noise_grid != None:
+            correctly_labeled_samples += torch.sum(torch.eq(pred_labels, args.target_class)).item()
+        else:
+            correctly_labeled_samples += torch.sum(torch.eq(pred_labels, labels)).item()
         # fill confusion_matrix
         for t, p in zip(labels.view(-1), pred_labels.view(-1)):
             confusion_matrix[t.long(), p.long()] += 1
@@ -319,13 +342,27 @@ def get_loss_n_accuracy(model, criterion, data_loader, args, round, num_classes=
 def poison_dataset(dataset, args, data_idxs=None, poison_all=False, agent_idx=-1, modify_label=True):
     # if data_idxs != None:
     #     all_idxs = list(set(all_idxs).intersection(data_idxs))
+    if args.attack == "wanet":
+        # don't do anything for wanet
+        return
     if data_idxs != None:
-        all_idxs = (dataset.targets != args.target_class).nonzero().flatten().tolist()
+        # all_idxs = (dataset.targets != args.target_class).nonzero().flatten().tolist()
+        # all_idxs = list(set(all_idxs).intersection(data_idxs))
+        if args.source_class > 0 and poison_all == False:
+            all_idxs = (dataset.targets == args.source_class).nonzero().flatten().tolist()
+            # all_idxs = [ index for index, data,label in enumerate(dataset) if label  == args.source_class]
+        else:
+            all_idxs = (dataset.targets != args.target_class).nonzero().flatten().tolist()
+            # print(all_idxs
+            # print(all_idxs)
+            # all_idxs = [ index for index, data,label in enumerate(dataset) if label  != args.target_class]
         all_idxs = list(set(all_idxs).intersection(data_idxs))
+        # print(all_idxs)
     else:
         all_idxs = (dataset.targets != args.target_class).nonzero().flatten().tolist()
     poison_frac = 1 if poison_all else args.poison_frac
     poison_idxs = random.sample(all_idxs, floor(poison_frac * len(all_idxs)))
+    count = 0
     for idx in poison_idxs:
         if args.data == 'fedemnist':
             clean_img = dataset.inputs[idx]
@@ -333,8 +370,20 @@ def poison_dataset(dataset, args, data_idxs=None, poison_all=False, agent_idx=-1
             clean_img = dataset[idx][0]
         else:
             clean_img = dataset.data[idx]
-        bd_img = add_pattern_bd(clean_img, dataset.targets[idx], args.data, pattern_type=args.pattern_type,
-                                agent_idx=agent_idx, attack=args.attack)
+        if args.attack== "hybrid":
+            if count%3 == 0: 
+                bd_img = add_pattern_bd(clean_img, dataset.targets[idx], args.data, pattern_type=args.pattern_type,
+                                        agent_idx=agent_idx, attack = "periodic_trigger")
+            elif count%3 ==1:
+                bd_img = add_pattern_bd(clean_img, dataset.targets[idx], args.data, pattern_type=args.pattern_type,
+                                    agent_idx=agent_idx, attack = "DBA")
+            else:
+                bd_img = add_pattern_bd(clean_img, dataset.targets[idx], args.data, pattern_type=args.pattern_type,
+                                    agent_idx=agent_idx, attack = "badnet")
+            count+=1
+        else:
+            bd_img = add_pattern_bd(clean_img, dataset.targets[idx], args.data, pattern_type=args.pattern_type,
+                                    agent_idx=agent_idx, attack=args.attack)
         if args.data == 'fmnist':
             dataset.data[idx] = torch.tensor(bd_img)
         elif args.data == "tinyimagenet":
@@ -417,7 +466,7 @@ def calculate_sparsities(args, params, tabu=[], distribution="ERK"):
             rhs = 0
             raw_probabilities = {}
             for name in params:
-                if name in tabu or "running" in name or "track" in name :
+                if name in tabu or "running" in name or "track" in name:
                     dense_layers.add(name)
                 n_param = np.prod(params[name].shape)
                 n_zeros = n_param * (1 - density)
@@ -477,7 +526,6 @@ def add_pattern_bd(x, y, dataset='cifar10', pattern_type='square', agent_idx=-1,
     """
     adds a trojan pattern to the image
     """
-
     # if cifar is selected, we're doing a distributed backdoor attack (i.e., portions of trojan pattern is split between agents, only works for plus)
     if dataset == 'cifar10' or dataset == "cifar100" or dataset == "gtsrb":
         x = np.array(x.squeeze())

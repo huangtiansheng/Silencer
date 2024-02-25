@@ -1,0 +1,169 @@
+---------------------------------------
+Begin Slurm Prolog: Feb-22-2024 17:24:27
+Job ID:    5046924
+User ID:   thuang374
+Account:   gts-ll72-paid
+Job name:  lockdown
+Partition: gpu-h100
+QOS:       inferno
+---------------------------------------
+
+The following have been reloaded with a version change:
+  1) libiconv/1.16-pbdcxj => libiconv/1.17
+  2) libxml2/2.9.13-d4fgiv => libxml2/2.10.3
+  3) xz/5.2.2-kbeci4 => xz/5.4.1
+  4) zlib/1.2.7-s3gked => zlib/1.2.13
+
+Files already downloaded and verified
+Files already downloaded and verified
+Sparsity of var:conv1.1.weight had to be set to 0.
+Sparsity of var:conv1.1.bias had to be set to 0.
+Sparsity of var:conv2.1.weight had to be set to 0.
+Sparsity of var:conv2.1.bias had to be set to 0.
+Sparsity of var:res1.0.1.weight had to be set to 0.
+Sparsity of var:res1.0.1.bias had to be set to 0.
+Sparsity of var:res1.1.1.weight had to be set to 0.
+Sparsity of var:res1.1.1.bias had to be set to 0.
+Sparsity of var:conv3.1.weight had to be set to 0.
+Sparsity of var:conv3.1.bias had to be set to 0.
+Sparsity of var:conv4.1.weight had to be set to 0.
+Sparsity of var:conv4.1.bias had to be set to 0.
+Sparsity of var:res2.0.1.weight had to be set to 0.
+Sparsity of var:res2.0.1.bias had to be set to 0.
+Sparsity of var:res2.1.1.weight had to be set to 0.
+Sparsity of var:res2.1.1.bias had to be set to 0.
+Sparsity of var:classifier.2.weight had to be set to 0.
+Sparsity of var:conv1.0.weight had to be set to 0.
+Sparsity of var:conv2.0.weight had to be set to 0.
+tensor([6., 1., 7.,  ..., 7., 7., 1.])
+Client   0: 0.087, 0.015, 0.000, 0.000, 0.051, 0.000, 0.605, 0.242, 0.000, 0.000, Amount:1503
+tensor([0., 0., 0., 0., 0., 0., 0., 0., 1., 4., 4., 4., 4., 4., 6., 6., 6., 6.,
+        6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6.,
+        6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6.,
+        6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6.,
+        6., 6., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7.,
+        7., 7., 7., 7., 7., 7., 7., 7.])
+Traceback (most recent call last):
+  File "/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/decentralized.py", line 458, in <module>
+    client_per_test_loader_list,  client_per_backdoor_loader_list = construct_personalized_val(val_dataset, agents)
+  File "/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/decentralized.py", line 98, in construct_personalized_val
+    idxs = (client_backdoor_dataset.dataset.targets != args.target_class).nonzero().flatten().tolist()
+UnboundLocalError: local variable 'client_backdoor_dataset' referenced before assignment
+Files already downloaded and verified
+Files already downloaded and verified
+Sparsity of var:conv1.1.weight had to be set to 0.
+Sparsity of var:conv1.1.bias had to be set to 0.
+Sparsity of var:conv2.1.weight had to be set to 0.
+Sparsity of var:conv2.1.bias had to be set to 0.
+Sparsity of var:res1.0.1.weight had to be set to 0.
+Sparsity of var:res1.0.1.bias had to be set to 0.
+Sparsity of var:res1.1.1.weight had to be set to 0.
+Sparsity of var:res1.1.1.bias had to be set to 0.
+Sparsity of var:conv3.1.weight had to be set to 0.
+Sparsity of var:conv3.1.bias had to be set to 0.
+Sparsity of var:conv4.1.weight had to be set to 0.
+Sparsity of var:conv4.1.bias had to be set to 0.
+Sparsity of var:res2.0.1.weight had to be set to 0.
+Sparsity of var:res2.0.1.bias had to be set to 0.
+Sparsity of var:res2.1.1.weight had to be set to 0.
+Sparsity of var:res2.1.1.bias had to be set to 0.
+Sparsity of var:classifier.2.weight had to be set to 0.
+Sparsity of var:conv1.0.weight had to be set to 0.
+Sparsity of var:conv2.0.weight had to be set to 0.
+tensor([6., 1., 7.,  ..., 7., 7., 1.])
+Client   0: 0.087, 0.015, 0.000, 0.000, 0.051, 0.000, 0.605, 0.242, 0.000, 0.000, Amount:1503
+tensor([0., 0., 0., 0., 0., 0., 0., 0., 1., 4., 4., 4., 4., 4., 6., 6., 6., 6.,
+        6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6.,
+        6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6.,
+        6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6.,
+        6., 6., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7.,
+        7., 7., 7., 7., 7., 7., 7., 7.])
+Traceback (most recent call last):
+  File "/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/decentralized.py", line 458, in <module>
+    client_per_test_loader_list,  client_per_backdoor_loader_list = construct_personalized_val(val_dataset, agents)
+  File "/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/decentralized.py", line 98, in construct_personalized_val
+    idxs = (client_backdoor_dataset.dataset.targets != args.target_class).nonzero().flatten().tolist()
+UnboundLocalError: local variable 'client_backdoor_dataset' referenced before assignment
+Files already downloaded and verified
+Files already downloaded and verified
+Sparsity of var:conv1.1.weight had to be set to 0.
+Sparsity of var:conv1.1.bias had to be set to 0.
+Sparsity of var:conv2.1.weight had to be set to 0.
+Sparsity of var:conv2.1.bias had to be set to 0.
+Sparsity of var:res1.0.1.weight had to be set to 0.
+Sparsity of var:res1.0.1.bias had to be set to 0.
+Sparsity of var:res1.1.1.weight had to be set to 0.
+Sparsity of var:res1.1.1.bias had to be set to 0.
+Sparsity of var:conv3.1.weight had to be set to 0.
+Sparsity of var:conv3.1.bias had to be set to 0.
+Sparsity of var:conv4.1.weight had to be set to 0.
+Sparsity of var:conv4.1.bias had to be set to 0.
+Sparsity of var:res2.0.1.weight had to be set to 0.
+Sparsity of var:res2.0.1.bias had to be set to 0.
+Sparsity of var:res2.1.1.weight had to be set to 0.
+Sparsity of var:res2.1.1.bias had to be set to 0.
+Sparsity of var:classifier.2.weight had to be set to 0.
+Sparsity of var:conv1.0.weight had to be set to 0.
+Sparsity of var:conv2.0.weight had to be set to 0.
+tensor([6., 1., 7.,  ..., 7., 7., 1.])
+Client   0: 0.087, 0.015, 0.000, 0.000, 0.051, 0.000, 0.605, 0.242, 0.000, 0.000, Amount:1503
+tensor([0., 0., 0., 0., 0., 0., 0., 0., 1., 4., 4., 4., 4., 4., 6., 6., 6., 6.,
+        6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6.,
+        6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6.,
+        6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6.,
+        6., 6., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7.,
+        7., 7., 7., 7., 7., 7., 7., 7.])
+Traceback (most recent call last):
+  File "/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/decentralized.py", line 458, in <module>
+    client_per_test_loader_list,  client_per_backdoor_loader_list = construct_personalized_val(val_dataset, agents)
+  File "/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/decentralized.py", line 98, in construct_personalized_val
+    idxs = (client_backdoor_dataset.dataset.targets != args.target_class).nonzero().flatten().tolist()
+UnboundLocalError: local variable 'client_backdoor_dataset' referenced before assignment
+Files already downloaded and verified
+Files already downloaded and verified
+Sparsity of var:conv1.1.weight had to be set to 0.
+Sparsity of var:conv1.1.bias had to be set to 0.
+Sparsity of var:conv2.1.weight had to be set to 0.
+Sparsity of var:conv2.1.bias had to be set to 0.
+Sparsity of var:res1.0.1.weight had to be set to 0.
+Sparsity of var:res1.0.1.bias had to be set to 0.
+Sparsity of var:res1.1.1.weight had to be set to 0.
+Sparsity of var:res1.1.1.bias had to be set to 0.
+Sparsity of var:conv3.1.weight had to be set to 0.
+Sparsity of var:conv3.1.bias had to be set to 0.
+Sparsity of var:conv4.1.weight had to be set to 0.
+Sparsity of var:conv4.1.bias had to be set to 0.
+Sparsity of var:res2.0.1.weight had to be set to 0.
+Sparsity of var:res2.0.1.bias had to be set to 0.
+Sparsity of var:res2.1.1.weight had to be set to 0.
+Sparsity of var:res2.1.1.bias had to be set to 0.
+Sparsity of var:classifier.2.weight had to be set to 0.
+Sparsity of var:conv1.0.weight had to be set to 0.
+Sparsity of var:conv2.0.weight had to be set to 0.
+tensor([6., 1., 7.,  ..., 7., 7., 1.])
+Client   0: 0.087, 0.015, 0.000, 0.000, 0.051, 0.000, 0.605, 0.242, 0.000, 0.000, Amount:1503
+tensor([0., 0., 0., 0., 0., 0., 0., 0., 1., 4., 4., 4., 4., 4., 6., 6., 6., 6.,
+        6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6.,
+        6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6.,
+        6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6., 6.,
+        6., 6., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7., 7.,
+        7., 7., 7., 7., 7., 7., 7., 7.])
+Traceback (most recent call last):
+  File "/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/decentralized.py", line 458, in <module>
+    client_per_test_loader_list,  client_per_backdoor_loader_list = construct_personalized_val(val_dataset, agents)
+  File "/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/decentralized.py", line 98, in construct_personalized_val
+    idxs = (client_backdoor_dataset.dataset.targets != args.target_class).nonzero().flatten().tolist()
+UnboundLocalError: local variable 'client_backdoor_dataset' referenced before assignment
+---------------------------------------
+Begin Slurm Epilog: Feb-22-2024 17:25:13
+Job ID:        5046924
+Array Job ID:  _4294967294
+User ID:       thuang374
+Account:       gts-ll72-paid
+Job name:      lockdown
+Resources:     cpu=8,mem=80G,node=1
+Rsrc Used:     cput=00:06:08,vmem=3593096K,walltime=00:00:46,mem=3219584K,energy_used=0
+Partition:     gpu-h100
+QOS:           inferno
+Nodes:         atl1-1-01-006-24-0
+---------------------------------------

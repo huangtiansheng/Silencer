@@ -1,0 +1,103 @@
+---------------------------------------
+Begin Slurm Prolog: Feb-21-2024 22:46:30
+Job ID:    5039068
+User ID:   thuang374
+Account:   gts-ll72-paid
+Job name:  lockdown
+Partition: gpu-h100
+QOS:       inferno
+---------------------------------------
+
+The following have been reloaded with a version change:
+  1) libiconv/1.16-pbdcxj => libiconv/1.17
+  2) libxml2/2.9.13-d4fgiv => libxml2/2.10.3
+  3) xz/5.2.2-kbeci4 => xz/5.4.1
+  4) zlib/1.2.7-s3gked => zlib/1.2.13
+
+usage: decentralized.py [-h] [--data DATA] [--num_agents NUM_AGENTS]
+                        [--agent_frac AGENT_FRAC] [--num_corrupt NUM_CORRUPT]
+                        [--rounds ROUNDS] [--aggr AGGR] [--local_ep LOCAL_EP]
+                        [--bs BS] [--client_lr CLIENT_LR]
+                        [--client_moment CLIENT_MOMENT]
+                        [--server_lr SERVER_LR] [--target_class TARGET_CLASS]
+                        [--source_class SOURCE_CLASS]
+                        [--poison_frac POISON_FRAC]
+                        [--pattern_type PATTERN_TYPE] [--theta THETA]
+                        [--clip CLIP] [--noise NOISE] [--top_frac TOP_FRAC]
+                        [--snap SNAP] [--device DEVICE]
+                        [--num_workers NUM_WORKERS]
+                        [--dense_ratio DENSE_RATIO]
+                        [--anneal_factor ANNEAL_FACTOR] [--method METHOD]
+                        [--pruning PRUNING] [--se_threshold SE_THRESHOLD]
+                        [--non_iid] [--personalized] [--debug] [--alpha ALPHA]
+                        [--attack ATTACK] [--lr_decay LR_DECAY]
+                        [--mask_init MASK_INIT] [--dis_check_gradient]
+                        [--wd WD] [--same_mask SAME_MASK]
+                        [--cease_poison CEASE_POISON] [--topology TOPOLOGY]
+                        [--neighbour_size NEIGHBOUR_SIZE]
+                        [--optimizer OPTIMIZER]
+decentralized.py: error: unrecognized arguments: -anneal_factor 0.00001
+usage: decentralized.py [-h] [--data DATA] [--num_agents NUM_AGENTS]
+                        [--agent_frac AGENT_FRAC] [--num_corrupt NUM_CORRUPT]
+                        [--rounds ROUNDS] [--aggr AGGR] [--local_ep LOCAL_EP]
+                        [--bs BS] [--client_lr CLIENT_LR]
+                        [--client_moment CLIENT_MOMENT]
+                        [--server_lr SERVER_LR] [--target_class TARGET_CLASS]
+                        [--source_class SOURCE_CLASS]
+                        [--poison_frac POISON_FRAC]
+                        [--pattern_type PATTERN_TYPE] [--theta THETA]
+                        [--clip CLIP] [--noise NOISE] [--top_frac TOP_FRAC]
+                        [--snap SNAP] [--device DEVICE]
+                        [--num_workers NUM_WORKERS]
+                        [--dense_ratio DENSE_RATIO]
+                        [--anneal_factor ANNEAL_FACTOR] [--method METHOD]
+                        [--pruning PRUNING] [--se_threshold SE_THRESHOLD]
+                        [--non_iid] [--personalized] [--debug] [--alpha ALPHA]
+                        [--attack ATTACK] [--lr_decay LR_DECAY]
+                        [--mask_init MASK_INIT] [--dis_check_gradient]
+                        [--wd WD] [--same_mask SAME_MASK]
+                        [--cease_poison CEASE_POISON] [--topology TOPOLOGY]
+                        [--neighbour_size NEIGHBOUR_SIZE]
+                        [--optimizer OPTIMIZER]
+decentralized.py: error: unrecognized arguments: -anneal_factor 0.001
+usage: decentralized.py [-h] [--data DATA] [--num_agents NUM_AGENTS]
+                        [--agent_frac AGENT_FRAC] [--num_corrupt NUM_CORRUPT]
+                        [--rounds ROUNDS] [--aggr AGGR] [--local_ep LOCAL_EP]
+                        [--bs BS] [--client_lr CLIENT_LR]
+                        [--client_moment CLIENT_MOMENT]
+                        [--server_lr SERVER_LR] [--target_class TARGET_CLASS]
+                        [--source_class SOURCE_CLASS]
+                        [--poison_frac POISON_FRAC]
+                        [--pattern_type PATTERN_TYPE] [--theta THETA]
+                        [--clip CLIP] [--noise NOISE] [--top_frac TOP_FRAC]
+                        [--snap SNAP] [--device DEVICE]
+                        [--num_workers NUM_WORKERS]
+                        [--dense_ratio DENSE_RATIO]
+                        [--anneal_factor ANNEAL_FACTOR] [--method METHOD]
+                        [--pruning PRUNING] [--se_threshold SE_THRESHOLD]
+                        [--non_iid] [--personalized] [--debug] [--alpha ALPHA]
+                        [--attack ATTACK] [--lr_decay LR_DECAY]
+                        [--mask_init MASK_INIT] [--dis_check_gradient]
+                        [--wd WD] [--same_mask SAME_MASK]
+                        [--cease_poison CEASE_POISON] [--topology TOPOLOGY]
+                        [--neighbour_size NEIGHBOUR_SIZE]
+                        [--optimizer OPTIMIZER]
+decentralized.py: error: unrecognized arguments: -anneal_factor 0.01
+/storage/home/hcoda1/7/thuang374/.conda/envs/hts/lib/python3.9/site-packages/torch/nn/functional.py:3769: UserWarning: nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.
+  warnings.warn("nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.")
+/storage/home/hcoda1/7/thuang374/.conda/envs/hts/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /opt/conda/conda-bld/pytorch_1695392035629/work/aten/src/ATen/native/TensorShape.cpp:3526.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+slurmstepd: error: *** JOB 5039068 ON atl1-1-01-006-24-0 CANCELLED AT 2024-02-21T23:13:22 ***
+---------------------------------------
+Begin Slurm Epilog: Feb-21-2024 23:13:23
+Job ID:        5039068
+Array Job ID:  _4294967294
+User ID:       thuang374
+Account:       gts-ll72-paid
+Job name:      lockdown
+Resources:     cpu=8,mem=80G,node=1
+Rsrc Used:     cput=03:34:56,vmem=10258144K,walltime=00:26:52,mem=10222628K,energy_used=0
+Partition:     gpu-h100
+QOS:           inferno
+Nodes:         atl1-1-01-006-24-0
+---------------------------------------

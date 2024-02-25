@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 import itertools
 
-def conv_block(in_channels, out_channels, pool=False, track_running_stats =True):
+def conv_block(in_channels, out_channels, pool=False, track_running_stats =False):
     layers = [nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1,bias=False), 
               nn.BatchNorm2d(out_channels,track_running_stats=track_running_stats),
               nn.ReLU(inplace=True)]

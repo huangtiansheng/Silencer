@@ -1,12 +1,15 @@
 import torch.nn.functional as F
 import torch.nn as nn
 from resnet9 import ResNet9, ResNet9_tinyimagenet
+from resnet50 import ResNet18,ResNet50
 
 def get_model(data):
     if data == 'fmnist' or data == 'fedemnist':
         return CNN_MNIST()
     elif data == 'cifar10':
         resnet = ResNet9(3,num_classes=10)
+        # resnet = ResNet18()
+        
         # resnet =customized_resnet18(class_num=10)
         # for name,param in resnet.named_parameters():
         #     logging.info(name)

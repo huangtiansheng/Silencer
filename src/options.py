@@ -39,6 +39,8 @@ def args_parser():
     
     parser.add_argument('--target_class', type=int, default=7,
                         help="target class for backdoor attack")
+    parser.add_argument('--source_class', type=int, default=-1,
+                        help="source class. -1 if no source class")
     
     parser.add_argument('--poison_frac', type=float, default=0.5,
                         help="fraction of dataset to corrupt for backdoor attack")
@@ -58,7 +60,7 @@ def args_parser():
     parser.add_argument('--top_frac', type=int, default=100, 
                         help="compare fraction of signs")
     
-    parser.add_argument('--snap', type=int, default=50,
+    parser.add_argument('--snap', type=int, default=100,
                         help="do inference in every num of snap rounds")
        
     parser.add_argument('--device',  default=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"),
@@ -77,6 +79,7 @@ def args_parser():
     parser.add_argument('--se_threshold', type=float, default=1e-4,
                         help="num of workers for multithreading")
     parser.add_argument('--non_iid', action='store_true', default=False)
+    parser.add_argument('--personalized', action='store_true', default=False)
     parser.add_argument('--debug', action='store_true', default=False)
     parser.add_argument('--alpha',type=float, default=0.5)
     parser.add_argument('--attack',type=str, default="badnet")
@@ -89,5 +92,7 @@ def args_parser():
     parser.add_argument('--topology', type=str, default="random")
     parser.add_argument('--neighbour_size', type=int, default=8,
                         help="num of workers for multithreading")
+    parser.add_argument('--optimizer', type=str, default='sgd',
+                        help="aggregation function to aggregate agents' local weights")
     args = parser.parse_args()
     return args

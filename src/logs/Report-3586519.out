@@ -1,0 +1,25 @@
+---------------------------------------
+Begin Slurm Prolog: Sep-30-2023 01:27:43
+Job ID:    3586519
+User ID:   thuang374
+Account:   gts-ll72
+Job name:  lockdown
+Partition: gpu-a100
+QOS:       embers
+---------------------------------------
+/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/utils.py:159: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  labels_sorted = torch.tensor(dataset.targets).sort()
+slurmstepd: error: *** JOB 3586519 ON atl1-1-01-006-1-0 CANCELLED AT 2023-09-30T01:39:28 ***
+---------------------------------------
+Begin Slurm Epilog: Sep-30-2023 01:39:30
+Job ID:        3586519
+Array Job ID:  _4294967294
+User ID:       thuang374
+Account:       gts-ll72
+Job name:      lockdown
+Resources:     cpu=32,gres/gpu:a100=1,mem=320G,node=1
+Rsrc Used:     cput=06:16:00,vmem=16064180K,walltime=00:11:45,mem=16018272K,energy_used=0
+Partition:     gpu-a100
+QOS:           embers
+Nodes:         atl1-1-01-006-1-0
+---------------------------------------

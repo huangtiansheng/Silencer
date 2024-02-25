@@ -1,0 +1,30 @@
+---------------------------------------
+Begin Slurm Prolog: Feb-21-2024 16:56:46
+Job ID:    5036658
+User ID:   thuang374
+Account:   gts-ll72-paid
+Job name:  lockdown
+Partition: gpu-h100
+QOS:       inferno
+---------------------------------------
+
+The following have been reloaded with a version change:
+  1) libiconv/1.16-pbdcxj => libiconv/1.17
+  2) libxml2/2.9.13-d4fgiv => libxml2/2.10.3
+  3) xz/5.2.2-kbeci4 => xz/5.4.1
+  4) zlib/1.2.7-s3gked => zlib/1.2.13
+
+slurmstepd: error: *** JOB 5036658 ON atl1-1-01-006-24-0 CANCELLED AT 2024-02-21T16:57:05 ***
+---------------------------------------
+Begin Slurm Epilog: Feb-21-2024 16:57:07
+Job ID:        5036658
+Array Job ID:  _4294967294
+User ID:       thuang374
+Account:       gts-ll72-paid
+Job name:      lockdown
+Resources:     cpu=8,mem=80G,node=1
+Rsrc Used:     cput=00:02:40,vmem=3330856K,walltime=00:00:20,mem=3117132K,energy_used=0
+Partition:     gpu-h100
+QOS:           inferno
+Nodes:         atl1-1-01-006-24-0
+---------------------------------------

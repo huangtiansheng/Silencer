@@ -62,6 +62,8 @@ def visual_test_tsne(dict, val_dataset, poisoned_dataset, args):
     random_indices2 = random.sample(range(0, len(poisoned_dataset)), num_poisoned)
     features1= extract_features(val_dataset[random_indices1][0])
     features2 = extract_features(poisoned_dataset[random_indices2][0])
+    
+    
     # Merge the features by concatenating them
     merged_features = np.concatenate([features1, features2], axis=0)
     merged_labels  = np.concatenate([val_dataset[random_indices1][1], [ 10 for i in range(num_poisoned)]], axis=0)
