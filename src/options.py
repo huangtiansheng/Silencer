@@ -7,7 +7,7 @@ def args_parser():
     parser.add_argument('--data', type=str, default='cifar10',
                         help="dataset we want to train on")
     
-    parser.add_argument('--num_agents', type=int, default=40,
+    parser.add_argument('--num_agents', type=int, default=80,
                         help="number of agents:K")
     
     parser.add_argument('--agent_frac', type=float, default=1,
@@ -60,7 +60,7 @@ def args_parser():
     parser.add_argument('--top_frac', type=int, default=100, 
                         help="compare fraction of signs")
     
-    parser.add_argument('--snap', type=int, default=100,
+    parser.add_argument('--snap', type=int, default=150,
                         help="do inference in every num of snap rounds")
        
     parser.add_argument('--device',  default=torch.device("cuda:0" if torch.cuda.is_available() else "cpu"),
@@ -94,5 +94,7 @@ def args_parser():
                         help="num of workers for multithreading")
     parser.add_argument('--optimizer', type=str, default='sgd',
                         help="aggregation function to aggregate agents' local weights")
+    parser.add_argument('--dis_pruning_aware', action='store_true', default=False)
+    parser.add_argument('--tau', type=float, default=0.1)
     args = parser.parse_args()
     return args

@@ -1,19 +1,12 @@
 ---------------------------------------
-Begin Slurm Prolog: Feb-21-2024 14:56:26
-Job ID:    5034824
+Begin Slurm Prolog: Jan-23-2025 08:37:55
+Job ID:    2578269
 User ID:   thuang374
 Account:   gts-ll72
 Job name:  lockdown
-Partition: gpu-h100
-QOS:       embers
+Partition: gpu-h200
+QOS:       inferno
 ---------------------------------------
-
-The following have been reloaded with a version change:
-  1) libiconv/1.16-pbdcxj => libiconv/1.17
-  2) libxml2/2.9.13-d4fgiv => libxml2/2.10.3
-  3) xz/5.2.2-kbeci4 => xz/5.4.1
-  4) zlib/1.2.7-s3gked => zlib/1.2.13
-
 /storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/utils.py:161: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
   labels_sorted = torch.tensor(dataset.targets).sort()
 /storage/home/hcoda1/7/thuang374/.conda/envs/hts/lib/python3.9/site-packages/torch/nn/functional.py:3769: UserWarning: nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.
@@ -24,17 +17,16 @@ The following have been reloaded with a version change:
   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
 /storage/home/hcoda1/7/thuang374/.conda/envs/hts/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /opt/conda/conda-bld/pytorch_1695392035629/work/aten/src/ATen/native/TensorShape.cpp:3526.)
   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
-slurmstepd: error: *** JOB 5034824 ON atl1-1-03-010-1-0 CANCELLED AT 2024-02-21T22:56:49 DUE TO TIME LIMIT ***
+slurmstepd: error: *** JOB 2578269 ON atl1-1-01-009-2-0 CANCELLED AT 2025-01-23T08:45:49 ***
 ---------------------------------------
-Begin Slurm Epilog: Feb-21-2024 22:56:50
-Job ID:        5034824
-Array Job ID:  _4294967294
+Begin Slurm Epilog: Jan-23-2025 08:45:51
+Job ID:        2578269
 User ID:       thuang374
 Account:       gts-ll72
 Job name:      lockdown
-Resources:     cpu=8,mem=80G,node=1
-Rsrc Used:     cput=2-16:03:12,vmem=25600036K,walltime=08:00:24,mem=25529544K,energy_used=0
-Partition:     gpu-h100
-QOS:           embers
-Nodes:         atl1-1-03-010-1-0
+Resources:     cpu=8,gres/gpu:h200=1,mem=320G,node=1
+Rsrc Used:     cput=01:03:12,vmem=0,walltime=00:07:54,mem=11007748K,energy_used=0
+Partition:     gpu-h200
+QOS:           inferno
+Nodes:         atl1-1-01-009-2-0
 ---------------------------------------

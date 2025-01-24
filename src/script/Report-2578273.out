@@ -1,19 +1,12 @@
 ---------------------------------------
-Begin Slurm Prolog: Feb-23-2024 00:03:32
-Job ID:    5050725
+Begin Slurm Prolog: Jan-23-2025 08:46:25
+Job ID:    2578273
 User ID:   thuang374
 Account:   gts-ll72
 Job name:  lockdown
-Partition: gpu-h100
+Partition: gpu-h200
 QOS:       inferno
 ---------------------------------------
-
-The following have been reloaded with a version change:
-  1) libiconv/1.16-pbdcxj => libiconv/1.17
-  2) libxml2/2.9.13-d4fgiv => libxml2/2.10.3
-  3) xz/5.2.2-kbeci4 => xz/5.4.1
-  4) zlib/1.2.7-s3gked => zlib/1.2.13
-
 /storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/utils.py:161: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
   labels_sorted = torch.tensor(dataset.targets).sort()
 /storage/home/hcoda1/7/thuang374/.conda/envs/hts/lib/python3.9/site-packages/torch/nn/functional.py:3769: UserWarning: nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.
@@ -67,15 +60,14 @@ Sparsity of var:classifier.2.weight had to be set to 0.
 Sparsity of var:conv1.0.weight had to be set to 0.
 Sparsity of var:conv2.0.weight had to be set to 0.
 ---------------------------------------
-Begin Slurm Epilog: Feb-23-2024 05:51:08
-Job ID:        5050725
-Array Job ID:  _4294967294
+Begin Slurm Epilog: Jan-23-2025 14:52:01
+Job ID:        2578273
 User ID:       thuang374
 Account:       gts-ll72
 Job name:      lockdown
-Resources:     cpu=8,mem=80G,node=1
-Rsrc Used:     cput=1-22:20:56,vmem=18232176K,walltime=05:47:37,mem=17206552K,energy_used=0
-Partition:     gpu-h100
+Resources:     cpu=8,gres/gpu:h200=1,mem=320G,node=1
+Rsrc Used:     cput=2-00:44:48,vmem=0,walltime=06:05:36,mem=16199432K,energy_used=0
+Partition:     gpu-h200
 QOS:           inferno
-Nodes:         atl1-1-01-006-24-0
+Nodes:         atl1-1-01-009-2-0
 ---------------------------------------

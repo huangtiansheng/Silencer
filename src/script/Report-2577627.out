@@ -1,19 +1,19 @@
 ---------------------------------------
-Begin Slurm Prolog: Feb-21-2024 18:20:29
-Job ID:    5037719
+Begin Slurm Prolog: Jan-23-2025 07:21:27
+Job ID:    2577627
 User ID:   thuang374
-Account:   gts-ll72-paid
+Account:   gts-ll72
 Job name:  lockdown
-Partition: gpu-h100
+Partition: gpu-h200
 QOS:       inferno
 ---------------------------------------
 
-The following have been reloaded with a version change:
-  1) libiconv/1.16-pbdcxj => libiconv/1.17
-  2) libxml2/2.9.13-d4fgiv => libxml2/2.10.3
-  3) xz/5.2.2-kbeci4 => xz/5.4.1
-  4) zlib/1.2.7-s3gked => zlib/1.2.13
+CondaError: Run 'conda init' before 'conda deactivate'
 
+/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/utils.py:161: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  labels_sorted = torch.tensor(dataset.targets).sort()
+/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/utils.py:161: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  labels_sorted = torch.tensor(dataset.targets).sort()
 /storage/home/hcoda1/7/thuang374/.conda/envs/hts/lib/python3.9/site-packages/torch/nn/functional.py:3769: UserWarning: nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.
   warnings.warn("nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.")
 /storage/home/hcoda1/7/thuang374/.conda/envs/hts/lib/python3.9/site-packages/torch/nn/functional.py:3769: UserWarning: nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.
@@ -30,21 +30,16 @@ The following have been reloaded with a version change:
   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
 /storage/home/hcoda1/7/thuang374/.conda/envs/hts/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /opt/conda/conda-bld/pytorch_1695392035629/work/aten/src/ATen/native/TensorShape.cpp:3526.)
   return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
-/storage/home/hcoda1/7/thuang374/.conda/envs/hts/lib/python3.9/site-packages/torch/nn/functional.py:3769: UserWarning: nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.
-  warnings.warn("nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.")
-/storage/home/hcoda1/7/thuang374/.conda/envs/hts/lib/python3.9/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /opt/conda/conda-bld/pytorch_1695392035629/work/aten/src/ATen/native/TensorShape.cpp:3526.)
-  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
-slurmstepd: error: *** JOB 5037719 ON atl1-1-01-006-24-0 CANCELLED AT 2024-02-21T22:45:49 ***
+slurmstepd: error: *** JOB 2577627 ON atl1-1-01-007-28-0 CANCELLED AT 2025-01-23T07:26:20 ***
 ---------------------------------------
-Begin Slurm Epilog: Feb-21-2024 22:45:50
-Job ID:        5037719
-Array Job ID:  _4294967294
+Begin Slurm Epilog: Jan-23-2025 07:26:23
+Job ID:        2577627
 User ID:       thuang374
-Account:       gts-ll72-paid
+Account:       gts-ll72
 Job name:      lockdown
-Resources:     cpu=8,mem=80G,node=1
-Rsrc Used:     cput=1-11:22:40,vmem=54694284K,walltime=04:25:20,mem=54182348K,energy_used=0
-Partition:     gpu-h100
+Resources:     cpu=1,gres/gpu:h200=1,mem=40G,node=1
+Rsrc Used:     cput=00:04:54,vmem=0,walltime=00:04:54,mem=21395172K,energy_used=0
+Partition:     gpu-h200
 QOS:           inferno
-Nodes:         atl1-1-01-006-24-0
+Nodes:         atl1-1-01-007-28-0
 ---------------------------------------

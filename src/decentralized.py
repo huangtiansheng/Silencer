@@ -191,7 +191,15 @@ def do_test(rnd, global_model, rnd_global_params, args, corrupt_idx, clients=Non
                 bacc_vec= []
                 fp_vec = []
                 gradient_norms = []
+                
                 consensus = {}
+                import time 
+                torch.cuda.synchronize()
+                start_event = torch.cuda.Event(enable_timing=True)
+                end_event = torch.cuda.Event(enable_timing=True)
+
+                # Record the start event
+                start_event.record()
                 for name, param in test_model.named_parameters():
                     mask = 0
                     for id, agent in enumerate(agents):
@@ -199,7 +207,10 @@ def do_test(rnd, global_model, rnd_global_params, args, corrupt_idx, clients=Non
                     consensus[name] = torch.where(mask.to(args.device) >= args.theta, torch.ones_like(param),
                                                   torch.zeros_like(param))
                     logging.info(torch.sum(consensus[name]) / torch.numel(consensus[name]))
-
+                end_event.record()
+                # Wait for all CUDA operations to finish
+                torch.cuda.synchronize()
+                print("consensus fusion time {}".format(start_event.elapsed_time(end_event)/ 1000))
                 for client in range(args.num_agents):
                     if client not in corrupt_idx or len(corrupt_idx)==args.num_agents:
                         state_dict = utils.vector_to_model(copy.deepcopy(rnd_global_params[client]), test_model)
@@ -228,23 +239,7 @@ def do_test(rnd, global_model, rnd_global_params, args, corrupt_idx, clients=Non
                         fp_vec.append(fp)
                         
                         
-                        # # get full train dataset's dataloader
-                        # global_gradient =  {name: 0 for name, param in test_model.named_parameters()}
-                        # for _, (x, labels) in enumerate(clean_loader):
-                        #     test_model.zero_grad()
-                        #     x, labels = x.to(args.device), labels.to(args.device)
-                        #     log_probs = test_model.forward(x)
-                        #     minibatch_loss = criterion(log_probs, labels.long())
-                        #     loss = minibatch_loss
-                        #     loss.backward()
-                        #     # when applying cross entropy, digonal of empirical Fisher information is the square of gradient
-                        #     for name, param in test_model.named_parameters():
-                        #         global_gradient [name] += param.grad.data
-                                
-                        # full_graident_norm = 0
-                        # for name in global_gradient:
-                        #     full_graident_norm+= torch.norm(global_gradient[name]/len(clean_dataset))
-                        # gradient_norms += [full_graident_norm.cpu()]
+    
                         if args.debug:
                             break
                 logging.info("clean val: {}".format(acc_vec))
@@ -301,6 +296,12 @@ def save_checkpoints(rnd, args, agents, rnd_global_params, corrupt_idx):
                 args.num_corrupt, args.num_agents, args.method, args.data, args.alpha, rnd, args.local_ep,
                 args.poison_frac, args.dense_ratio, args.aggr, args.se_threshold, args.non_iid,
                 args.theta, args.attack)
+        elif args.dis_pruning_aware == True:
+            PATH = "checkpoint/NoPruningAware_AckRatio{}_{}_Method{}_data{}_alpha{}_Rnd{}_Epoch{}_inject{}_dense{}_Agg{}_se_threshold{}_noniid{}_maskthreshold{}_attack{}.pt".format(
+                args.num_corrupt, args.num_agents, args.method, args.data, args.alpha, rnd, args.local_ep,
+                args.poison_frac, args.dense_ratio, args.aggr, args.se_threshold, args.non_iid,
+                args.theta, args.attack)
+        
         else:
             PATH = "checkpoint/Ack{}_{}_{}_{}_alpha{}_Rnd{}_Epoch{}_inject{}_dense{}_Agg{}_sm{}_noniid{}_theta{}_attack{}_end{}_af{}_ns{}_top{}".format(
             args.num_corrupt, args.num_agents, args.method, args.data, args.alpha, rnd, args.local_ep, args.poison_frac,
@@ -357,6 +358,10 @@ if __name__ == '__main__':
                 args.dense_ratio, args.aggr, args.same_mask, args.non_iid, args.theta, args.attack,args.anneal_factor,args.neighbour_size,args.topology)
         elif args.noise >0:
             fileName = "Noise{}_{}_{}_{}_{}_alpha{}_Epoch{}_inject{}_dense{}_Agg{}_sm{}_noniid{}_theta{}_attack{}_af{}_ns{}_top{}".format(args.noise,
+                args.num_corrupt, args.num_agents, args.method, args.data, args.alpha, args.local_ep, args.poison_frac,
+                args.dense_ratio, args.aggr, args.same_mask, args.non_iid, args.theta, args.attack,args.anneal_factor,args.neighbour_size,args.topology)
+        elif args.dis_pruning_aware == True:
+            fileName = "NoPruningAware{}_{}_{}_{}_alpha{}_Epoch{}_inject{}_dense{}_Agg{}_sm{}_noniid{}_theta{}_attack{}_af{}_ns{}_top{}".format(
                 args.num_corrupt, args.num_agents, args.method, args.data, args.alpha, args.local_ep, args.poison_frac,
                 args.dense_ratio, args.aggr, args.same_mask, args.non_iid, args.theta, args.attack,args.anneal_factor,args.neighbour_size,args.topology)
         else:
@@ -507,7 +512,14 @@ if __name__ == '__main__':
                             dp_params  += [rnd_global_params[i]]
                 _, neurotoxin_mask, rnd_global_params[agent_id] = aggregator.aggregate_updates(   agent_id, nei_indexs, dp_params, before_train_params, global_model, rnd,agents= agents)
             else:
+                import time 
                 _, neurotoxin_mask, rnd_global_params[agent_id] = aggregator.aggregate_updates(   agent_id, nei_indexs, rnd_global_params, before_train_params, global_model, rnd, agents= agents)
+        if args.aggr=="learn":
+             # learn need to another round of aggregation on the model weights after updating
+            for agent_id in chosen:
+                args.aggr = "avg"
+                _, neurotoxin_mask, rnd_global_params[agent_id]  = aggregator.aggregate_updates(   agent_id, nei_indexs, rnd_global_params, before_train_params, global_model, rnd, agents= agents)
+                args.aggr= "learn"
         # do test after aggregation
         # logging unmask gradient norm
         

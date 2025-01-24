@@ -26,13 +26,14 @@ class Aggregation():
     
     def aggregate_updates(self, client_id,  nei_indexs, after_train_params,before_train_params, global_model, round, agents= None):
         # logging.info(nei_indexs)
+        
         if self.args.aggr =="avg":
             weight_dict ={}
             for _id, weight in enumerate(after_train_params):
                 if _id in nei_indexs or _id == client_id:
                     weight_dict[_id] = weight
             average_weights =   self.decentralized_avg(weight_dict)
-        elif self.args.aggr =="krum" or self.args.aggr =="rlr" or self.args.aggr =="fltrust" or self.args.aggr =="grad_aggr" or self.args.aggr =="bulyan":
+        elif self.args.aggr =="krum" or self.args.aggr =="rlr" or self.args.aggr =="fltrust" or self.args.aggr =="grad_aggr" or self.args.aggr =="bulyan" or self.args.aggr =="learn":
             if round>1:
                 updates = {}
                 for _id, weight in enumerate(after_train_params):
@@ -139,7 +140,36 @@ class Aggregation():
                 if  (_id in top_k_id  and _id in nei_indexs) or _id == client_id:
                         weight_dict[_id] = weight
             average_weights =   self.decentralized_avg(weight_dict)
+        
+        elif self.args.aggr == "learn":
+            if round>1:
+                # learn directly average update to get its 1/2 model. It do another round of aggregating later
+                average_update =   self.decentralized_avg(updates )
+                average_weights = average_update+before_train_params[client_id]
+            else:
+                weight_dict ={}
+                for _id, weight in enumerate(after_train_params):
+                    if _id in nei_indexs or _id == client_id:
+                        weight_dict[_id] = weight
+                average_weights =   self.decentralized_avg(weight_dict)
+        elif self.args.aggr == "clippedGossip":
+            def clip(v, tau):
+                v_norm = abs(v)
+                scale = min(1, tau / v_norm)
+                return v * scale
+            weight_dict ={}
             
+            current_client_weights =  before_train_params [client_id]
+            for _id, weight in enumerate(after_train_params):
+                if _id in nei_indexs or _id == client_id:
+                    if _id==client_id: 
+                        weight_dict[_id] = weight
+                    else:
+                        weight_dict[_id] =  weight  + clip(weight - current_client_weights, args.tau)
+            # average
+            average_weights =   self.decentralized_avg(weight_dict)
+            
+         # the following is only for neurotoxin attack
         average_update = average_weights-before_train_params[client_id]
         neurotoxin_mask = {}
         updates_dict = vector_to_model(average_update, global_model)
@@ -150,6 +180,8 @@ class Aggregation():
             mask_flat = torch.zeros(gradients_length)
             mask_flat[indices.cpu()] = 1
             neurotoxin_mask[name] = (mask_flat.reshape(updates_dict[name].size()))
+            
+        
         return    None, neurotoxin_mask, average_weights
     
     def compute_robusttrust(self, agent_updates, id):

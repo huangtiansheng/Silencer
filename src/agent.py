@@ -185,7 +185,7 @@ class Agent():
             # logging.info(end - start)
         end_time = time.time()
         local_training_time = end_time - start_time
-        # logging.info("local training time{}".format(local_training_time))
+        logging.info("local training time{}".format(local_training_time))
         with torch.no_grad():
             after_train = parameters_to_vector(
                 [global_model.state_dict()[name] for name in global_model.state_dict()]).detach()

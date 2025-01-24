@@ -1,0 +1,40 @@
+---------------------------------------
+Begin Slurm Prolog: Jan-23-2025 07:26:26
+Job ID:    2577636
+User ID:   thuang374
+Account:   gts-ll72
+Job name:  lockdown
+Partition: gpu-h200
+QOS:       inferno
+---------------------------------------
+
+CondaError: Run 'conda init' before 'conda deactivate'
+
+  File "/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/decentralized.py", line 368
+    elif args.dis_pruning_aware == True:
+                                        ^
+IndentationError: unindent does not match any outer indentation level
+  File "/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/decentralized.py", line 368
+    elif args.dis_pruning_aware == True:
+                                        ^
+IndentationError: unindent does not match any outer indentation level
+  File "/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/decentralized.py", line 368
+    elif args.dis_pruning_aware == True:
+                                        ^
+IndentationError: unindent does not match any outer indentation level
+  File "/storage/coda1/p-ll72/0/thuang374/hts3/Silencer/src/decentralized.py", line 368
+    elif args.dis_pruning_aware == True:
+                                        ^
+IndentationError: unindent does not match any outer indentation level
+---------------------------------------
+Begin Slurm Epilog: Jan-23-2025 07:26:31
+Job ID:        2577636
+User ID:       thuang374
+Account:       gts-ll72
+Job name:      lockdown
+Resources:     cpu=1,gres/gpu:h200=1,mem=40G,node=1
+Rsrc Used:     cput=00:00:06,vmem=0,walltime=00:00:06,mem=37836K,energy_used=0
+Partition:     gpu-h200
+QOS:           inferno
+Nodes:         atl1-1-01-007-28-0
+---------------------------------------
